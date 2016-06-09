@@ -5,6 +5,7 @@
 # the terms of the MIT License, see the file COPYING included with this 
 # distribution.
 
+from __future__ import print_function
 import sys
 import os
 from tempfile import NamedTemporaryFile
@@ -18,7 +19,7 @@ from gimmemotifs.config import FASTA_EXT
 def index(args):
     
     if not os.path.exists(args.indexdir):
-        print "Index_dir %s does not exist!" % (args.indexdir)
+        print("Index_dir %s does not exist!" % (args.indexdir))
         sys.exit(1)
 
     fasta_dir = args.fastadir

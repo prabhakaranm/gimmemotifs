@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import print_function
 from numpy import array, hstack
 import sys
 import os
@@ -14,11 +15,11 @@ def get_scores(motif, file):
 def maxenr(args):
 
     if not os.path.exists(args.sample):
-        print "File %s does not exist!" % args.sample
+        print("File %s does not exist!" % args.sample)
         exit(1)
     
     if not os.path.exists(args.background):
-        print "File %s does not exist!" % args.background
+        print("File %s does not exist!" % args.background)
         exit(1)
     
     pwmfile = args.pwmfile
@@ -37,14 +38,14 @@ def maxenr(args):
     bg_jobs = {}
     
     for id in ids:
-        if motifs.has_key(id):
+        if id in motifs:
             bg_jobs[id] = pool.apply_async(get_scores, (motifs[id],bg_file,))
             fg_jobs[id] = pool.apply_async(get_scores, (motifs[id],fg_file,))
         else:
-            print "Wrong id: %s" % id
+            print("Wrong id: %s" % id)
             sys.exit()
     
-    print "Motif\t# matches\tMax. enrichment\tScore\tCutoff"
+    print("Motif\t# matches\tMax. enrichment\tScore\tCutoff")
     
     for id in ids:
         pos = array(fg_jobs[id].get())
@@ -61,5 +62,5 @@ def maxenr(args):
         max_score = scores[enr.argmax()]
         cutoff = (max_score - motifs[id].pwm_min_score()) / (motifs[id].pwm_max_score() - motifs[id].pwm_min_score())
     
-        print "%s\t%s\t%0.2f\t%0.2f\t%0.3f" % (id, sum(pos >= scores[enr.argmax()]), max(enr), scores[enr.argmax()], cutoff)
+        print("%s\t%s\t%0.2f\t%0.2f\t%0.3f" % (id, sum(pos >= scores[enr.argmax()]), max(enr), scores[enr.argmax()], cutoff))
     #print len(pos), len(neg)

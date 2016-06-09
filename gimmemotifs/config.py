@@ -40,13 +40,13 @@ class MotifConfig:
             self.config = ConfigParser.ConfigParser()
             cfg = self.config.read(self.configs)
             if not cfg:
-                raise ValueError, "Configuration file not found!"
+                raise ValueError("Configuration file not found!")
         
     def bin(self, program):
         try:
             bin = self.config.get(program, "bin")
         except: 
-            raise ValueError, "No configuration found for %s" % program
+            raise ValueError("No configuration found for %s" % program)
         return bin
     
     def set_default_params(self, params):
@@ -79,7 +79,7 @@ class MotifConfig:
             else:
                 return os.path.dirname(self.bin(program))
         else:
-            raise ValueError, "No configuration found for %s" % program
+            raise ValueError("No configuration found for %s" % program)
     
     def set_program(self, program, d):
         if not self.config.has_section(program):

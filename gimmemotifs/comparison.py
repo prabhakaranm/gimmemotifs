@@ -7,6 +7,7 @@
 """ 
 Module to compare DNA sequence motifs (positional frequency matrices)
 """
+from __future__ import print_function
 
 # Python imports
 import sys
@@ -165,7 +166,7 @@ class MotifComparer:
         try:
             [1 - norm.cdf(score[0], m, s), score[1], score[2]]
         except:
-            print "HOEI: {0}".format(score)
+            print("HOEI: {0}".format(score))
         return [1 - norm.cdf(score[0], m, s), score[1], score[2]]
 
     def fisim(self, m1, m2):
@@ -205,7 +206,7 @@ class MotifComparer:
                 try:
                     func = getattr(distance, metric)     
                 except: 
-                    raise Exception, "Unknown metric '{}'".format(metric)
+                    raise Exception("Unknown metric '{}'".format(metric))
 
             scores = []
             for pos1,pos2 in zip(matrix1,matrix2):
@@ -215,7 +216,7 @@ class MotifComparer:
             elif combine == "sum":
                 return sum(scores)
             else:
-                raise "Unknown combine"
+                raise Exception("Unknown combine")
 
     def max_subtotal(self, matrix1, matrix2, metric, combine):
         scores = []
@@ -374,7 +375,7 @@ class MotifComparer:
                 # and update the result score
                 for m1,v in result.items():
                     for m2, score in v.items():
-                        if not scores.has_key(m1):
+                        if m1 not in scores:
                             scores[m1] = {}
 
                         scores [m1][m2] = score

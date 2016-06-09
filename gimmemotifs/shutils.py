@@ -18,7 +18,7 @@ def run_command(cmd):
     p.communicate()
 
 def which(fname):
-    if not os.environ.has_key("PATH") or not os.environ["PATH"]:
+    if "PATH" not in os.environ or not os.environ["PATH"]:
         path = os.defpath
     else:
         path = os.environ["PATH"]

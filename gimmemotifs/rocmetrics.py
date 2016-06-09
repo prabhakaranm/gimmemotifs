@@ -127,7 +127,7 @@ def ROC_AUC_xlim(x_bla, y_bla, xlim=None):
     y = new_y
 
     if len(x) != len(y):
-        raise "Unequal!"
+        raise ValueError("Unequal!")
 
     if not xlim:
         xlim = 1.0

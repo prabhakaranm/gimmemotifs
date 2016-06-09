@@ -21,7 +21,7 @@ class Fasta:
 			c = f.read()
 			f.close()
 			if not(c.startswith(">")):
-				raise IOError, "Not a valid FASTA file"
+				raise IOError("Not a valid FASTA file")
 			
 			for seq in c.split(">"):
 				if len(seq) > 1:
@@ -32,7 +32,7 @@ class Fasta:
 					self.ids.append(seq_name)
 					sequence = "".join(lines[1:])
 					if p.match(sequence):
-						raise IOError, "Not a valid FASTA file"
+						raise IOError("Not a valid FASTA file")
 					self.seqs.append(sequence)
 		
 	def hardmask(self):

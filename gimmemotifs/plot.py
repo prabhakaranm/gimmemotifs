@@ -4,6 +4,7 @@
 # the terms of the MIT License, see the file COPYING included with this 
 # distribution.
 """ Various plotting functions """
+from __future__ import print_function
 import os
 import sys
 from tempfile import NamedTemporaryFile
@@ -143,7 +144,7 @@ def diff_plot(motifs, pwms, names, freq, counts, bgfreq, bgcounts, outfile, mind
     for f in filters:
         filt = np.logical_and(filt, f)
          
-        print "Filter: ", sum(filt)
+        print("Filter: ", sum(filt))
     
 
     motifs = np.array(motifs)[filt]

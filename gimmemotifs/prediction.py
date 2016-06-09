@@ -108,7 +108,7 @@ class PredictionResult:
     def get_remaining_stats(self):
         for motif in self.motifs:
             n = "%s_%s" % (motif.id, motif.to_consensus())
-            if not self.stats.has_key(n):
+            if n not in self.stats:
                 
                 self.logger.info("Adding %s again!" % n)
                 job_id = "%s_%s" % (motif.id, motif.to_consensus())
@@ -170,7 +170,7 @@ def pp_predict_motifs(fastafile, outfile, analysis="small", organism="hg18", sin
             }
 
     for t in toolio:
-        if tools.has_key(t.name) and tools[t.name]:
+        if t.name in tools and tools[t.name]:
             if t.use_width:
                 for i in range(wmin, wmax + 1, step):
                     logger.debug("Starting %s job, width %s" % (t.name, i))
@@ -202,7 +202,7 @@ def pp_predict_motifs(fastafile, outfile, analysis="small", organism="hg18", sin
             job_server.terminate()
             result.get_remaining_stats()
     ### Or the user gets impatient... ###
-    except KeyboardInterrupt, e:
+    except KeyboardInterrupt as e:
         # Destroy all running jobs
         logger.info("Caught interrupt, destroying all running jobs")
         job_server.terminate()

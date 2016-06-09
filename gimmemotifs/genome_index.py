@@ -4,6 +4,7 @@
 # the terms of the MIT License, see the file COPYING included with this 
 # distribution.
 """ Module to index genomes for fast retrieval of sequences """
+from __future__ import print_function
 
 from struct import pack,unpack
 from string import maketrans
@@ -211,7 +212,7 @@ class GenomeIndex:
     def _check_dir(self, dir):
         """ Check if dir exists, if not: give warning and die"""
         if not os.path.exists(dir):
-            print "Directory %s does not exist!" % dir
+            print("Directory %s does not exist!" % dir)
             sys.exit(1)
     
     def _make_index(self, fasta, index):
@@ -242,11 +243,11 @@ class GenomeIndex:
 
         # Can't continue if we still don't have an index_dir or fasta_dir
         if not fasta_dir:
-            print "fasta_dir not defined!"
+            print("fasta_dir not defined!")
             sys.exit(1)
         
         if not index_dir:
-            print "index_dir not defined!"
+            print("index_dir not defined!")
             sys.exit(1)
         
         index_dir = os.path.abspath(index_dir)
@@ -258,7 +259,7 @@ class GenomeIndex:
         if not os.path.exists(index_dir):
             try:
                 os.mkdir(index_dir)
-            except OSError, e:
+            except OSError as e:
                 if e.args[0] == 13:
                     sys.stderr.write("No permission to create index directory. Superuser access needed?\n")
                     sys.exit()
@@ -273,9 +274,8 @@ class GenomeIndex:
 
         fastafiles = find_by_ext(fasta_dir, FASTA_EXT)
         if not(fastafiles):
-            raise IOError, \
-                    "No fastafiles found in {} with extension in {}".format(
-                    fasta_dir, ",".join(FASTA_EXT))
+            raise IOError("No fastafiles found in {} with extension in {}".format(
+                    fasta_dir, ",".join(FASTA_EXT)))
 
         # param_file will hold all the information about the location of the fasta-files, indeces and 
         # length of the sequences
@@ -284,7 +284,7 @@ class GenomeIndex:
         
         try:
             out = open(param_file, "w")
-        except IOError, e:
+        except IOError as e:
                 if e.args[0] == 13:
                     sys.stderr.write("No permission to create files in index directory. Superuser access needed?\n")
                     sys.exit()
@@ -394,7 +394,7 @@ class GenomeIndex:
         """ Retrieve multiple sequences from same chr (RC not possible yet)"""    
         # Check if we have an index_dir
         if not self.index_dir:
-            print "Index dir is not defined!"
+            print("Index dir is not defined!")
             sys.exit()
 
         # retrieve all information for this specific sequence
@@ -410,13 +410,13 @@ class GenomeIndex:
             seq = ""
             for (start,end) in coordset: 
                 if start > total_size:
-                    raise ValueError, "%s: %s, invalid start, greater than sequence length!" % (chr,start)
+                    raise ValueError("%s: %s, invalid start, greater than sequence length!" % (chr,start))
             
                 if start < 0:
-                    raise ValueError, "Invalid start, < 0!"
+                    raise ValueError("Invalid start, < 0!")
                 
                 if end > total_size:
-                    raise ValueError, "Invalid end, greater than sequence length!"
+                    raise ValueError("Invalid end, greater than sequence length!")
 
 
                 seq += self._read(index, fasta, start, end, line_size)
@@ -431,7 +431,7 @@ class GenomeIndex:
         """ Retrieve a sequence """    
         # Check if we have an index_dir
         if not self.index_dir:
-            print "Index dir is not defined!"
+            print("Index dir is not defined!")
             sys.exit()
 
         # retrieve all information for this specific sequence
@@ -442,13 +442,13 @@ class GenomeIndex:
 
         #print fasta_file, index_file, line_size, total_size
         if start > total_size:
-            raise ValueError, "Invalid start {0}, greater than sequence length {1} of {2}!".format(start, total_size, chr)
+            raise ValueError("Invalid start {0}, greater than sequence length {1} of {2}!".format(start, total_size, chr))
         
         if start < 0:
-            raise ValueError, "Invalid start, < 0!"
+            raise ValueError("Invalid start, < 0!")
         
         if end > total_size:
-            raise ValueError, "Invalid end {0}, greater than sequence length {1} of {2}!".format(end, total_size, chr)
+            raise ValueError("Invalid end {0}, greater than sequence length {1} of {2}!".format(end, total_size, chr))
 
 
         index = open(index_file)
@@ -472,7 +472,7 @@ class GenomeIndex:
             raise LookupError("no chromosomes in index, is the index correct?")
 
         if chrom:
-            if self.size.has_key(chrom):
+            if chrom in self.size:
                 return self.size[chrom]
             else: 
                 raise KeyError("chromosome {} not in index".format(chrom))
@@ -505,7 +505,7 @@ def track2fasta(index_dir, bedfile, fastafile, extend_up=0, extend_down=0, use_s
                 try:
                     start, end = int(vals[1]), int(vals[2])
                 except:
-                    print "Error on line %s while reading %s. Is the file in BED or WIG format?" % (line_count, bedfile)
+                    print("Error on line %s while reading %s. Is the file in BED or WIG format?" % (line_count, bedfile))
                     sys.exit(1)
                 strand = "+"
                 if use_strand:
@@ -565,7 +565,7 @@ def track2fasta(index_dir, bedfile, fastafile, extend_up=0, extend_down=0, use_s
     
     out = open(fastafile, "w")
     for chrom, i in features:
-        if seqs.has_key((chrom, i)):
+        if (chrom, i) in seqs:
             seq, ext_start, ext_end, val, strand = seqs[(chrom, i)]
             if use_strand and strand == "-":
                 seq = rc(seq)
@@ -621,7 +621,7 @@ if __name__ == "__main__":
         sys.exit(1)
     
     if not os.path.exists(options.indexdir):
-        print "Index_dir %s does not exist!" % (options.indexdir)
+        print("Index_dir %s does not exist!" % (options.indexdir))
         sys.exit(1)
 
     fasta_dir = options.fastadir

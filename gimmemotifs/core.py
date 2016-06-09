@@ -64,7 +64,7 @@ def get_scores(motif, fg_file, bg_file):
         mncp = MNCP(fg_vals, bg_vals)
         max_f, y = max_fmeasure(x,y)
 
-    except Exception,e:
+    except Exception as e:
         error = e
     return (error, auc, mncp, max_f, y)
 
@@ -78,7 +78,7 @@ def get_roc_values(motif, fg_file, bg_file):
 
         (x, y) = ROC_values(fg_vals, bg_vals)
         return None,x,y
-    except Exception,e:
+    except Exception as e:
         error = e
         return error,[],[]
 

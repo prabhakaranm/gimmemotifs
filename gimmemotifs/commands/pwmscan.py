@@ -5,6 +5,7 @@
 # the terms of the MIT License, see the file COPYING included with this 
 # distribution.
 
+from __future__ import print_function
 import sys
 import re
 
@@ -138,4 +139,4 @@ def pwmscan(args):
             args.pvalue,
             bgfile,
             ):
-        print line
+        print(line)

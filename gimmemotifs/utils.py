@@ -5,6 +5,7 @@
 # distribution.
 
 """ Odds and ends that for which I didn't (yet) find another place """
+from __future__ import print_function
 
 # Python imports
 import os
@@ -70,9 +71,9 @@ def divide_file(fname, sample, rest, fraction, abs_max):
     tmp.close()
 
     if stderr:
-        print "Something went wrong.\nstdout: {}\nstderr; {}".format(
+        print("Something went wrong.\nstdout: {}\nstderr; {}".format(
                 stdout,
-                stderr)
+                stderr))
         sys.exit()
 
     # Rest
@@ -142,7 +143,7 @@ def write_equalwidth_bedfile(bedfile, width, outfile):
                 try:
                     start, end = int(vals[1]), int(vals[2])
                 except:
-                    print "Error on line %s while reading %s. Is the file in BED or WIG format?" % (line_count, bedfile)
+                    print("Error on line %s while reading %s. Is the file in BED or WIG format?" % (line_count, bedfile))
                     sys.exit(1)
 
                 start = (start + end) / 2 - (width / 2)
@@ -237,9 +238,9 @@ def parse_gff(gff_file, lowmem=False):
 
                 mr.sequences[seq] = 1
 
-                if not(mr.motifs.has_key(motif_name)):
+                if not(motif_name in mr.motifs):
                     mr.motifs[motif_name] = {}
-                if not(mr.motifs[motif_name].has_key(seq)):
+                if not(seq in mr.motifs[motif_name]):
                     mr.motifs[motif_name][seq] = 0
                 mr.motifs[motif_name][seq] += 1
             else:
@@ -254,7 +255,7 @@ def calc_motif_enrichment(sample, background, mtc=None, len_sample=None, len_bac
 
 
     if mtc not in [None, "Bonferroni", "Benjamini-Hochberg", "None"]:
-        raise RuntimeError, "Unknown correction: %s" % mtc
+        raise RuntimeError("Unknown correction: %s" % mtc)
 
     sig = {}
     p_value  = {}
@@ -313,7 +314,7 @@ def calc_enrichment(sample, background, len_sample, len_back, mtc=None):
     INF = "Inf"
 
     if mtc not in [None, "Bonferroni", "Benjamini-Hochberg", "None"]:
-        raise RuntimeError, "Unknown correction: %s" % mtc
+        raise RuntimeError("Unknown correction: %s" % mtc)
 
     sig = {}
     p_value  = {}
@@ -455,7 +456,7 @@ def parse_cutoff(motifs, cutoff, default=0.9):
             cutoffs[motif.id] = float(cutoff)
     
     for motif in motifs:
-        if not cutoffs.has_key(motif.id):
+        if motif.id not in cutoffs:
             sys.stderr.write("No cutoff found for {0}, using default {1}\n".format(motif.id, default))
             cutoffs[motif.id] = default
     return cutoffs

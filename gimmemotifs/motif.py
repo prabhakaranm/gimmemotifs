@@ -5,6 +5,7 @@
 # distribution.
 
 """ Core motif class """
+from __future__ import print_function
 
 # Python imports
 import re
@@ -710,7 +711,7 @@ class Motif(object):
             if logger:
                 logger.error(msg)
             else:
-                print msg
+                print(msg)
             raise
 
 

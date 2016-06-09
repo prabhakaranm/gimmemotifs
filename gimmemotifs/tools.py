@@ -5,6 +5,7 @@
 # distribution.
 
 """ Interface module for all motif programs """
+from __future__ import print_function
 
 # Python imports
 import re
@@ -34,10 +35,10 @@ def locate_tool(tool, verbose=True):
     tool_bin = which(m.cmd) 
     if tool_bin:
         if verbose:
-            print "Found {} in {}".format(m.name, tool_bin) 
+            print("Found {} in {}".format(m.name, tool_bin)) 
         return tool_bin 
     else: 
-        print "Couldn't find {}".format(m.name)
+        print("Couldn't find {}".format(m.name))
 
 class MotifProgram(object):
     config = MotifConfig()
@@ -154,7 +155,7 @@ class Homer(MotifProgram):
         
         # Background file is essential!
         if not default_params["background"]:
-            print "Background file needed!"
+            print("Background file needed!")
             sys.exit()
         
         bgfile = os.path.abspath(default_params["background"])
@@ -213,7 +214,7 @@ class BioProspector(MotifProgram):
         
         # Background file is essential!
         if not default_params["background"]:
-            print "Background file needed!"
+            print("Background file needed!")
             sys.exit()
         
         #bgfile = os.path.abspath(default_params["background"])
@@ -351,7 +352,7 @@ class Amd(MotifProgram):
         
         # Background file is essential!
         if not default_params["background"]:
-            print "Background file needed!"
+            print("Background file needed!")
             sys.exit(1)
         
         bgfile = os.path.abspath(default_params["background"])
@@ -359,7 +360,7 @@ class Amd(MotifProgram):
         outfile = fgfile + ".Matrix"    
     
         shutil.copy(fastafile, fgfile)
-        print fgfile
+        print(fgfile)
         current_path = os.getcwd()
         os.chdir(self.tmpdir)
         
@@ -423,7 +424,7 @@ class Improbizer(MotifProgram):
         
         # Not strictly necessary, but recommended
         if not default_params["background"]:
-            print "Background file needed!"
+            print("Background file needed!")
             sys.exit()
         
         bgfile = os.path.abspath(default_params["background"])
@@ -487,7 +488,7 @@ class Trawler(MotifProgram):
         
         fastafile = os.path.abspath(fastafile)
         if not default_params["background"]:
-            print "Background file needed!"
+            print("Background file needed!")
             sys.exit()
         bgfile = os.path.abspath(default_params["background"])
         savedir = os.path.abspath(savedir)
@@ -577,7 +578,7 @@ class Weeder(MotifProgram):
             "sacCer2":"SC",
             "xenTro2":"XT",
             "xenTro3":"XT"}
-        if weeder_organisms.has_key(organism):
+        if organism in weeder_organisms:
             weeder_organism = weeder_organisms[organism]
         else:
             return []    
@@ -592,7 +593,7 @@ class Weeder(MotifProgram):
 
         freq_files = os.path.join(weeder_dir, "FreqFiles")
         if not os.path.exists(freq_files):
-            raise ValueError, "Can't find FreqFiles directory for Weeder"
+            raise ValueError("Can't find FreqFiles directory for Weeder")
                 
 
         fastafile = os.path.abspath(fastafile)
@@ -729,7 +730,7 @@ class MotifSampler(MotifProgram):
                         self.config.get_bg_dir(), 
                         "{}.{}.bg".format(org, "MotifSampler"))
             else:            
-                raise Exception, "No background specified for {}".format(self.name)
+                raise Exception("No background specified for {}".format(self.name))
 
         fastafile = os.path.abspath(fastafile)
         savedir = os.path.abspath(savedir)
