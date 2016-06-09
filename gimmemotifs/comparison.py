@@ -8,6 +8,11 @@
 Module to compare DNA sequence motifs (positional frequency matrices)
 """
 from __future__ import print_function
+from __future__ import division
+from past.builtins import cmp
+from builtins import zip
+from builtins import range
+from builtins import object
 
 # Python imports
 import sys
@@ -85,7 +90,7 @@ def seqcor(m1,m2):
     return max(c)
 
 
-class MotifComparer:
+class MotifComparer(object):
     def __init__(self):
         self.config = MotifConfig()
         self.metrics = ["pcc", "ed", "distance", "wic", "fisim"]
@@ -358,7 +363,7 @@ class MotifComparer:
             # Number of chunks = number of processors available
             n_cpus = int(MotifConfig().get_default_params()["ncpus"])
             
-            batch_len = len(dbmotifs) / n_cpus
+            batch_len = len(dbmotifs) // n_cpus
             if batch_len <= 0:
                 batch_len = 1
             jobs = []
@@ -388,8 +393,8 @@ class MotifComparer:
 
     def get_closest_match(self, motifs, dbmotifs, match, metric, combine, parallel=True):
         scores = self.get_all_scores(motifs, dbmotifs, match, metric, combine, parallel=parallel)
-        for motif, matches in scores.items():
-            scores[motif] = sorted(scores[motif].items(), cmp=lambda x,y: cmp(y[1][0], x[1][0]))[0]
+        for motif, matches in list(scores.items()):
+            scores[motif] = sorted(list(scores[motif].items()), cmp=lambda x,y: cmp(y[1][0], x[1][0]))[0]
         return scores
 
     def generate_score_dist(self, motifs, match, metric, combine):
@@ -408,8 +413,8 @@ class MotifComparer:
         for l1 in all_scores.keys():
             for l2 in all_scores.keys():
                 scores = self.get_all_scores(sorted_motifs[l1], sorted_motifs[l2], match, metric, combine)
-                scores = scores.values()
-                scores = [[y[0] for y in x.values() if y] for x in scores]
+                scores = list(scores.values())
+                scores = [[y[0] for y in list(x.values()) if y] for x in scores]
                 scores = array(scores).ravel()
                 f.write("%s\t%s\t%s\t%s\n" % (l1, l2, mean(scores), std(scores)))
 

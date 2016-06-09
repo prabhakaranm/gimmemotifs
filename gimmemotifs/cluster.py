@@ -7,6 +7,8 @@
 """ 
 Module for clustering of DNA sequence motifs (positional frequency matrices)
 """
+from __future__ import division
+from builtins import object
 
 import sys
 
@@ -15,7 +17,7 @@ from gimmemotifs.motif import read_motifs
 from gimmemotifs.comparison import MotifComparer
 from gimmemotifs.config import MotifConfig
 
-class MotifTree:
+class MotifTree(object):
     """ class MotifTree used by cluster_motifs"""
     
     def __init__(self, motif):
@@ -150,7 +152,7 @@ def cluster_motifs(motifs, match="total", metric="wic", combine="mean", pval=Tru
     total = len(cluster_nodes)
 
     while len(cluster_nodes) > 1:
-        l = sorted(scores.keys(), key=lambda x: scores[x][0])
+        l = sorted(list(scores.keys()), key=lambda x: scores[x][0])
         i = -1
         (n1, n2) = l[i]
         while not n1 in cluster_nodes or not n2 in cluster_nodes:
@@ -180,15 +182,15 @@ def cluster_motifs(motifs, match="total", metric="wic", combine="mean", pval=Tru
         cmp_nodes = dict([(node.motif, node) for node in nodes if not node.parent])
         
         if progress:
-            progress = (1 - len(cmp_nodes) / float(total)) * 100
+            progress = (1 - len(cmp_nodes) /  float(total)) * 100
             sys.stderr.write('\rClustering [{0}{1}] {2}%'.format(
-                '#'*(int(progress)/10), 
-                " "*(10 - int(progress)/10), 
+                '#'*(int(progress) // 10), 
+                " "*(10 - int(progress) // 10), 
                 int(progress)))
         
         result = mc.get_all_scores(
                 [new_node.motif], 
-                cmp_nodes.keys(), 
+                list(cmp_nodes.keys()), 
                 match, 
                 metric, 
                 combine, 
