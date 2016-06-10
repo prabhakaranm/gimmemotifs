@@ -71,16 +71,16 @@ data_files=[
     ('gimmemotifs/score_dists', ['score_dists/total_wic_mean_score_dist.txt']),
     ('gimmemotifs/genes', ['genes/hg18.bed', 'genes/hg19.bed', 'genes/xenTro2.bed', 'genes/mm9.bed']),
     ('gimmemotifs/bg', ['bg/hg19.MotifSampler.bg', 'bg/hg18.MotifSampler.bg', 'bg/mm9.MotifSampler.bg', 'bg/xenTro2.MotifSampler.bg']),
-    ('gimmemotifs/motif_databases', [
-                                    'motif_databases/JASPAR2010_vertebrate.pwm',
-                                    'motif_databases/JASPAR2016_vertebrate.pwm',
-                                    'motif_databases/vertebrate_motifs.pwm',
-                                    'motif_databases/vertebrate_clusters.pwm',
-                                    'motif_databases/vertebrate_clusters.pwm',
-                                    'motif_databases/gimme.invertebrate.v1.0.pwm',
-                                    'motif_databases/gimme.vertebrate.v3.1.pwm',
-                                    'motif_databases/gimme.vertebrate.v3.1.factor2motifs.txt',
-                                    'motif_databases/gimme.vertebrate.v3.1.motif2factors.txt',
+    ('gimmemotifs/db/pwm', [
+                                    'db/pwm/JASPAR2010_vertebrate.pwm',
+                                    'db/pwm/JASPAR2016_vertebrate.pwm',
+                                    'db/pwm/vertebrate_motifs.pwm',
+                                    'db/pwm/vertebrate_clusters.pwm',
+                                    'db/pwm/vertebrate_clusters.pwm',
+                                    'db/pwm/gimme.invertebrate.v1.0.pwm',
+                                    'db/pwm/gimme.vertebrate.v3.1.pwm',
+                                    'db/pwm/gimme.vertebrate.v3.1.factor2motifs.txt',
+                                    'db/pwm/gimme.vertebrate.v3.1.motif2factors.txt',
                                     ]),
 #    ('gimmemotifs/doc', ['doc/gimmemotifs_manual.pdf','doc/gimmemotifs_manual.html']),
     ('gimmemotifs/examples', ['examples/TAp73alpha.bed','examples/TAp73alpha.fa']),
@@ -356,7 +356,7 @@ class install_config(Command):
         cfg.set_gene_dir(os.path.join(data_dir, 'gimmemotifs/genes'))
         cfg.set_score_dir(os.path.join(data_dir, 'gimmemotifs/score_dists'))
         cfg.set_index_dir(os.path.join(data_dir, 'gimmemotifs/genome_index'))
-        cfg.set_motif_dir(os.path.join(data_dir, 'gimmemotifs/motif_databases'))
+        cfg.set_motif_dir(os.path.join(data_dir, 'gimmemotifs/db/pwm'))
         cfg.set_bg_dir(os.path.join(data_dir, 'gimmemotifs/bg'))
         cfg.set_tools_dir(os.path.join(data_dir, 'gimmemotifs/tools'))
         

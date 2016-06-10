@@ -4,7 +4,7 @@ bg = /usr/share/gimmemotifs/bg
 template_dir = /usr/share/gimmemotifs/templates
 score_dir = /usr/share/gimmemotifs/score_dists
 gene_dir = /usr/share/gimmemotifs/genes
-motif_databases = /usr/share/gimmemotifs/motif_databases
+motif_databases = /usr/share/gimmemotifs/db/pwm
 seqlogo = /usr/share/gimmemotifs/tools/seqlogo
 tools = /usr/share/gimmemotifs/tools
 
