@@ -8,8 +8,6 @@
 Module for clustering of DNA sequence motifs (positional frequency matrices)
 """
 from __future__ import division
-from builtins import object
-
 import sys
 
 # GimmeMotifs imports

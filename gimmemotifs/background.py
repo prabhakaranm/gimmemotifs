@@ -11,6 +11,7 @@ Markov model and MatchedGenomicFasta, which generates a background with a
 similar genomic distribution as the input.
 
 """
+from __future__ import division
 
 # Python imports
 import os
@@ -163,9 +164,9 @@ class MarkovFasta(Fasta):
             self.init[k] = v / total
             
     def _generate_sequence(self, l):
-        sequence = list(self._weighted_random(self.init.items()))
+        sequence = list(self._weighted_random(list(self.init.items())))
         for i in range(l - self.k):
-            sequence.append(self._weighted_random(self.trans["".join(sequence[-self.k:])].items()))
+            sequence.append(self._weighted_random(list(self.trans["".join(sequence[-self.k:])].items())))
         return "".join(sequence)
 
     def _weighted_random(self, l):
@@ -192,7 +193,7 @@ def matched_gc_bedfile(bedfile, matchfile, genome, number):
 
     try:
         fa = Fasta(matchfile)
-        gc = [(seq.upper().count("C") + seq.upper().count("G")) / float(len(seq)) for seq in fa.seqs]
+        gc = [(seq.upper().count("C") + seq.upper().count("G") / float(len(seq))) for seq in fa.seqs]
         lengths = [len(seq) for seq in fa.seqs]
     except:
         try:

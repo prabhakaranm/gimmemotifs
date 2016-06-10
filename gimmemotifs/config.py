@@ -5,7 +5,9 @@
 # distribution.
 
 """ Configuration for GimmeMotifs """
-import ConfigParser
+from future import standard_library
+standard_library.install_aliases()
+import configparser
 import distutils.sysconfig
 import os
 
@@ -18,7 +20,7 @@ BG_RANK = {"user":1, "promoter":2, "gc":3, "random":4, "genomic":5}
 FASTA_EXT = [".fasta", ".fa", ".fsa"]
 
 
-class MotifConfig:
+class MotifConfig(object):
     __shared_state = {}
     prefix = distutils.sysconfig.get_config_var("prefix")
     config_dir = "share/gimmemotifs/gimmemotifs.cfg"
@@ -34,10 +36,10 @@ class MotifConfig:
     def __init__(self, use_config=""):
         self.__dict__ = self.__shared_state
         if use_config:
-            self.config = ConfigParser.ConfigParser()
+            self.config = configparser.ConfigParser()
             cfg = self.config.read(use_config)
         elif not self.config:
-            self.config = ConfigParser.ConfigParser()
+            self.config = configparser.ConfigParser()
             cfg = self.config.read(self.configs)
             if not cfg:
                 raise ValueError("Configuration file not found!")

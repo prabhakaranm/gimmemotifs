@@ -4,6 +4,9 @@
 # the terms of the MIT License, see the file COPYING included with this
 # distribution.
 """ This module contains the core GimmeMotifs functionality """
+from __future__ import division
+from past.builtins import cmp
+from builtins import str
 
 # Python imports
 import os
@@ -385,9 +388,9 @@ class GimmeMotifs(object):
         
         self.logger.debug("Calculating enrichment")
         enrichment_cmd = gff_enrichment
-        num_sample = len(Fasta(fg[0]).items())
+        num_sample = len(Fasta(fg[0]))
         for fasta_file, gff_file, out_file in bg:
-            num_bg = len(Fasta(fasta_file).items())
+            num_bg = len(Fasta(fasta_file))
             enrichment_cmd(fg[1], gff_file, num_sample, num_bg, out_file)
 
     def create_background(self, background=None, organism="hg18", width=200):
@@ -438,7 +441,8 @@ class GimmeMotifs(object):
                 scores = {}
                 for motif in members:
                     scores[motif] =  mc.compare_motifs(cluster, motif, "total", "wic", "mean", pval=True)
-                add_pos = sorted(scores.values(),cmp=lambda x,y: cmp(x[1], y[1]))[0][1]
+                add_pos = sorted(list(scores.values()),
+                        cmp=lambda x,y: cmp(x[1], y[1]))[0][1]
                 for motif in members:
                     score, pos, strand = scores[motif]
                     add = pos - add_pos
@@ -479,18 +483,19 @@ class GimmeMotifs(object):
         motifs = dict([(m.id, m) for m in read_motifs(open(pwm_file), fmt="pwm")])
 
         jobs = {}
-        for id,m in motifs.items():
-            jobs[id] = self.job_server().apply_async(get_roc_values, (motifs[id],fg_fasta,bg_fasta,))
+        for m_id,m in motifs.items():
+            jobs[m_id] = self.job_server().apply_async(
+                    get_roc_values, (motifs[m_id],fg_fasta,bg_fasta,))
 
         roc_img_file = os.path.join(self.imgdir, "%s_%s_roc.png")
 
-        for id in motifs.keys():
-            error, x, y = jobs[id].get()
+        for m_id in motifs:
+            error, x, y = jobs[m_id].get()
             if error:
                 self.logger.error("Error in thread: %s", error)
                 sys.exit(1)
 
-            roc_plot(roc_img_file % (id,name), x, y)
+            roc_plot(roc_img_file % (m_id,name), x, y)
 
     def calculate_cluster_enrichment(self, pwm, background):
         fg = [self.validation_fa, self.validation_cluster_gff]
@@ -503,14 +508,14 @@ class GimmeMotifs(object):
         motifs = dict([(m.id, m) for m in read_motifs(open(pwm), fmt="pwm")])
 
         jobs = {}
-        for id,m in motifs.items():
+        for id,m in list(motifs.items()):
             jobs[id] = self.job_server().apply_async(get_scores, (motifs[id],sample_fa,bg_fa,))
 
         all_auc = {}
         all_mncp = {}
         f = open(roc_file, "w")
         f.write("Motif\tROC AUC\tMNCP\tMax f-measure\tSens @ max f-measure\n")
-        for id in motifs.keys():
+        for id in list(motifs.keys()):
             error, auc, mncp, max_f, y = jobs[id].get()
             if error:
                 self.logger.error("Error in thread: %s", error)
@@ -530,7 +535,7 @@ class GimmeMotifs(object):
 
         e_files = dict([(bg, self.bg_file["cluster_enrichment"][bg]) for bg in background])
 
-        for bg in self.p.keys():
+        for bg in self.p:
             for line in open(e_files[bg]).readlines():
                 if not (line.startswith("#") or line.startswith("Motif\tSig")):
                     vals = line.strip().split("\t")
@@ -543,7 +548,7 @@ class GimmeMotifs(object):
 
         rocs = dict([(bg, [self.bg_file["fa"][bg], self.bg_file["roc"][bg]]) for bg in background])
 
-        for bg in self.auc.keys():
+        for bg in self.auc:
             bg_fasta_file, roc_file = rocs[bg]
             self.auc[bg], self.mncp[bg] = self._roc_metrics(pwm, self.validation_fa, bg_fasta_file, roc_file)
 
@@ -584,7 +589,7 @@ class GimmeMotifs(object):
 
 
         self.logger.debug("Creating graphical report")
-        class ReportMotif:
+        class ReportMotif(object):
             pass
 
         motifs = read_motifs(open(pwm), fmt="pwm")
@@ -796,7 +801,7 @@ class GimmeMotifs(object):
             index_dir = os.path.join(self.config.get_index_dir(), params["genome"])
             lwidth = int(params["lwidth"])
             width = int(params["width"])
-            extend = (lwidth - width) / 2
+            extend = (lwidth - width) // 2
             genome_index.track2fasta(index_dir, self.validation_bed, self.location_fa, extend_up=extend, extend_down=extend, use_strand=params["use_strand"], ignore_missing=True)
 
         elif self.input_type == "FASTA":
@@ -840,7 +845,7 @@ class GimmeMotifs(object):
 
         # Write stats output to file
         f = open(self.stats_file, "w")
-        stat_keys = result.stats.values()[0].keys()
+        stat_keys = list(list(result.stats.values())[0].keys())
         f.write("%s\t%s\n" % ("Motif", "\t".join(stat_keys)))
         
         self.logger.debug(result.stats)
@@ -857,7 +862,7 @@ class GimmeMotifs(object):
         self.motifs_with_stats = motifs
 
         f = open(self.ranks_file, "w")
-        tools = dict((m.id.split("_")[0],1) for m in motifs).keys()
+        tools = list(dict((m.id.split("_")[0],1) for m in motifs).keys())
         f.write("Metric\tType\t%s\n" % ("\t".join(tools)))
         for stat in ["mncp", "roc_auc", "maxenr"]:
             best_motif = {}
@@ -866,7 +871,7 @@ class GimmeMotifs(object):
                 name = motif.id.split("_")[0]
                 if val > best_motif.setdefault(name, 0):
                     best_motif[name] = val
-            names = best_motif.keys()
+            names = list(best_motif.keys())
             vals = [best_motif[name] for name in names]
             rank = rankdata(vals)
             ind = [names.index(x) for x in tools]
@@ -920,7 +925,7 @@ class GimmeMotifs(object):
         tmp = NamedTemporaryFile(dir=mytmpdir()).name
         p = PredictionResult(tmp, logger=self.logger, job_server=self.server, fg_file = self.validation_fa, bg_file = bg_file)
         p.add_motifs(("clustering",  (read_motifs(open(self.final_pwm), fmt="pwm"), "","")))
-        while len(p.stats.keys()) < len(p.motifs):
+        while len(p.stats) < len(p.motifs):
             sleep(5)
 
         for mid, num in num_cluster.items():
@@ -951,7 +956,7 @@ class GimmeMotifs(object):
             outfile = os.path.join(self.imgdir, "%s_histogram.svg" % motif.id)
             motif_localization(self.location_fa, motif, lwidth, outfile, cutoff=s["cutoff_fdr"])
 
-            s["stars"] = int(mean([star(s[x], all_stats[x]) for x in all_stats.keys()]) + 0.5)
+            s["stars"] = int(mean([star(s[x], all_stats[x]) for x in all_stats]) + 0.5)
             self.logger.debug("Motif %s: %s stars" % (m, s["stars"]))
 
         # Calculate enrichment of final, clustered motifs
