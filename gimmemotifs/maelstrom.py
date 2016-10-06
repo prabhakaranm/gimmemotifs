@@ -113,12 +113,12 @@ def safe_join(df1, df2):
 def visualize_maelstrom(outdir, sig_cutoff=3, pwmfile=None):
     
     config = MotifConfig()
-    if pmwfile is None:
+    if pwmfile is None:
         pwmfile = config.get_default_params().get("motif_db", None)
         pwmfile = os.path.join(config.get_motif_dir(), pwmfile)
     
     mapfile = pwmfile.replace(".pwm", ".motif2factors.txt")
-    if os.path.exists(mapsfile):
+    if os.path.exists(mapfile):
     
         m2f = pd.read_csv(mapfile, sep="\t", names=["motif","factors"], index_col=0) 
         m2f["factors"] = m2f["factors"].str[:50]

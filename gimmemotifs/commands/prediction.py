@@ -6,11 +6,8 @@
 # distribution.
 
 import sys
-import os
-
 from yaml import load
 
-import gimmemotifs.config as cfg
 from gimmemotifs.tools import *
 
 def prediction(args):

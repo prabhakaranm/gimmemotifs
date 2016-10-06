@@ -5,8 +5,6 @@
 # the terms of the MIT License, see the file COPYING included with this 
 # distribution.
 
-from distutils import sysconfig
-
 from gimmemotifs.motif import pwmfile_to_motifs
 from gimmemotifs.comparison import MotifComparer
 from gimmemotifs.cluster import cluster_motifs
@@ -17,8 +15,6 @@ import os
 import jinja2
 
 def cluster(args):
-
-    revcomp = not args.single
 
     outdir = os.path.abspath(args.outdir)
     if not os.path.exists(outdir):
@@ -47,7 +43,7 @@ def cluster(args):
                 scores[motif] =  mc.compare_motifs(cluster, motif, "total", "wic", "mean", pval=True)    
             add_pos = sorted(scores.values(),cmp=lambda x,y: cmp(x[1], y[1]))[0][1]
             for motif in members:
-                score, pos, strand = scores[motif]
+                _, pos, strand = scores[motif]
                 add = pos - add_pos
                 
                 if strand in [1,"+"]:
@@ -59,7 +55,7 @@ def cluster(args):
                     motif = rc
                 #print "%s\t%s" % (motif.id, add)    
                 motif.to_img(os.path.join(outdir, "%s.png" % motif.id.replace(" ", "_")), format="PNG", add_left=add)
-        ids[-1][2] = [dict([("src", "%s.png" % motif.id.replace(" ", "_")), ("alt", motif.id.replace(" ", "_"))]) for motif in members]
+        ids[-1][2] = [dict([("src", "%s.png" % m.id.replace(" ", "_")), ("alt", m.id.replace(" ", "_"))]) for m in members]
     
     config = MotifConfig()
     env = jinja2.Environment(loader=jinja2.FileSystemLoader([config.get_template_dir()]))
@@ -70,8 +66,8 @@ def cluster(args):
         f.write(result.encode('utf-8'))
 
     f = open(os.path.join(outdir, "cluster_key.txt"), "w")
-    for id in ids:
-        f.write("%s\t%s\n" % (id[0], ",".join([x["alt"] for x in id[2]])))
+    for c_id in ids:
+        f.write("%s\t%s\n" % (c_id[0], ",".join([x["alt"] for x in c_id[2]])))
     f.close()
 
     f = open(os.path.join(outdir, "clustered_motifs.pwm"), "w")

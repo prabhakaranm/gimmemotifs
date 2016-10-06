@@ -27,7 +27,6 @@ from sklearn.multiclass import OneVsRestClassifier
 from sklearn.linear_model import Ridge,MultiTaskLasso
 from sklearn.metrics.pairwise import pairwise_distances
 from sklearn.preprocessing import scale, LabelEncoder
-from sklearn.multiclass import OneVsRestClassifier
 
 from lightning.classification import CDClassifier
 
